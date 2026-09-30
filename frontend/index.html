@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ScholarPath — Find Your Perfect Scholarship</title>
+  <meta name="description" content="ScholarPath helps Indian students discover scholarships tailored to their profile — merit, need-based, state, minority, disability, and more."/>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span>🎓</span> ScholarPath</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="form.html">Find Scholarships</a></li>
+      <li><a href="analysis.html">Analysis</a></li>
+      <li><a href="courses.html">Free Courses</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="form.html" class="nav-cta btn">Get Recommendations →</a></li>
+    </ul>
+    <div class="nav-toggle" id="navToggle" onclick="toggleNav()">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+  <div class="container">
+    <div class="hero-content fade-up">
+      <div class="hero-eyebrow">✨ AI-Powered Scholarship Matching</div>
+      <h1 class="hero-title">
+        <span class="line-1">Discover Scholarships</span>
+        <span class="line-2">Made For You</span>
+      </h1>
+      <p class="hero-subtitle">
+        Fill a quick form with your profile details and instantly get a personalized list of scholarships you're actually eligible for — with documents, deadlines & direct apply links.
+      </p>
+      <div class="hero-btns">
+        <a href="form.html" class="btn btn-primary btn-lg">🔍 Find My Scholarships</a>
+        <a href="about.html" class="btn btn-outline btn-lg">Learn More</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-num">10<span>+</span></span>
+          <span class="stat-label">Scholarships Listed</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num">8<span></span></span>
+          <span class="stat-label">Filter Parameters</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num">100<span>%</span></span>
+          <span class="stat-label">Free to Use</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num">2<span>min</span></span>
+          <span class="stat-label">To Get Results</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:56px;">
+      <div class="section-label">Simple Process</div>
+      <h2 class="section-title" style="-webkit-text-fill-color:var(--text);background:none;">How It Works</h2>
+      <p class="section-subtitle" style="margin:0 auto;">Three easy steps to find the scholarship that fits you perfectly.</p>
+    </div>
+    <div class="grid-3">
+      <div class="card" style="text-align:center;">
+        <div class="feature-icon" style="margin:0 auto 20px;font-size:2rem;width:64px;height:64px;border-radius:18px;background:rgba(108,99,255,0.15);">📝</div>
+        <h3 style="font-family:var(--font-heading);font-size:1.3rem;margin-bottom:12px;">1. Fill Your Profile</h3>
+        <p style="color:var(--text-muted);font-size:0.93rem;line-height:1.7;">Enter your education level, marks, family income, state, category, and other details in our smart form.</p>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div class="feature-icon" style="margin:0 auto 20px;font-size:2rem;width:64px;height:64px;border-radius:18px;background:rgba(255,107,157,0.12);">⚡</div>
+        <h3 style="font-family:var(--font-heading);font-size:1.3rem;margin-bottom:12px;">2. Get Matched</h3>
+        <p style="color:var(--text-muted);font-size:0.93rem;line-height:1.7;">Our system instantly filters and recommends scholarships based on your exact eligibility criteria.</p>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div class="feature-icon" style="margin:0 auto 20px;font-size:2rem;width:64px;height:64px;border-radius:18px;background:rgba(0,212,170,0.1);">🚀</div>
+        <h3 style="font-family:var(--font-heading);font-size:1.3rem;margin-bottom:12px;">3. Apply Directly</h3>
+        <p style="color:var(--text-muted);font-size:0.93rem;line-height:1.7;">View full scholarship details, required documents, eligibility, and apply directly from the official link.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:48px;">
+      <div class="section-label">Categories We Cover</div>
+      <h2 class="section-title" style="-webkit-text-fill-color:var(--text);background:none;">Scholarships For Everyone</h2>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center;">
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:16px 24px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(108,99,255,0.4)'" onmouseout="this.style.borderColor='var(--border)'"><span>🏅</span><span style="font-weight:600;">Merit Based</span></div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:16px 24px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(255,107,157,0.4)'" onmouseout="this.style.borderColor='var(--border)'"><span>💰</span><span style="font-weight:600;">Need Based</span></div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:16px 24px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(0,212,170,0.4)'" onmouseout="this.style.borderColor='var(--border)'"><span>🏛️</span><span style="font-weight:600;">SC / ST Students</span></div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:16px 24px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(255,184,0,0.4)'" onmouseout="this.style.borderColor='var(--border)'"><span>🌙</span><span style="font-weight:600;">Minority</span></div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:16px 24px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(80,180,255,0.4)'" onmouseout="this.style.borderColor='var(--border)'"><span>♿</span><span style="font-weight:600;">Disability</span></div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:16px 24px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(255,100,50,0.4)'" onmouseout="this.style.borderColor='var(--border)'"><span>🏃</span><span style="font-weight:600;">Sports</span></div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:16px 24px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(108,99,255,0.4)'" onmouseout="this.style.borderColor='var(--border)'"><span>👩‍🎓</span><span style="font-weight:600;">Girls Only</span></div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:16px 24px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(0,212,170,0.4)'" onmouseout="this.style.borderColor='var(--border)'"><span>🗺️</span><span style="font-weight:600;">State Level</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="glow-card" style="text-align:center;">
+      <div style="font-size:3rem;margin-bottom:16px;">🎯</div>
+      <h2 style="font-family:var(--font-heading);font-size:2.2rem;font-weight:800;margin-bottom:16px;">Ready to Find Your Scholarship?</h2>
+      <p style="color:var(--text-muted);font-size:1.05rem;max-width:480px;margin:0 auto 32px;line-height:1.7;">Takes less than 2 minutes. No sign-up required. Get personalized results instantly.</p>
+      <a href="form.html" class="btn btn-accent btn-lg">Start Now — It's Free →</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="nav-logo" style="font-size:1.3rem;">🎓 ScholarPath</a>
+        <p>Empowering Indian students to discover and access educational scholarships they deserve. Free, fast, and personalized.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Quick Links</h5>
+        <a href="index.html">Home</a>
+        <a href="form.html">Find Scholarships</a>
+        <a href="analysis.html">Survey Analysis</a>
+        <a href="courses.html">Free Courses</a>
+        <a href="about.html">About Us</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h5>Categories</h5>
+        <a href="form.html">Merit Based</a>
+        <a href="form.html">SC / ST</a>
+        <a href="form.html">Minority</a>
+        <a href="form.html">Girls</a>
+      </div>
+      <div class="footer-col">
+        <h5>Resources</h5>
+        <a href="https://scholarships.gov.in" target="_blank">NSP Portal</a>
+        <a href="https://www.aicte-india.org" target="_blank">AICTE</a>
+        <a href="https://maef.net.in" target="_blank">MAEF</a>
+        <a href="https://dst.gov.in" target="_blank">DST India</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 ScholarPath. All rights reserved.</p>
+      <p style="color:var(--text-dim);font-size:0.8rem;">Powered by FastAPI + MySQL</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleNav() {
+  document.getElementById('navLinks').classList.toggle('open');
+}
+// Animate on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('fade-up'); });
+}, {threshold: 0.1});
+document.querySelectorAll('.card, .glow-card').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

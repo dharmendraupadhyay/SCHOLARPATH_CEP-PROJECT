@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Survey Analysis — ScholarPath | Student Insights</title>
+  <meta name="description" content="Data analysis and insights from our student survey on scholarships, skill development, career guidance, and more."/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    /* ── ANALYSIS PAGE EXTRAS ── */
+    .analysis-hero {
+      padding: 72px 0 48px;
+      position: relative;
+      text-align: center;
+    }
+    .analysis-hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 200px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    }
+    .survey-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,212,170,0.1);
+      border: 1px solid rgba(0,212,170,0.25);
+      border-radius: 100px;
+      padding: 6px 18px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent2);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 24px;
+    }
+
+    /* Chart grid */
+    .chart-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(540px, 1fr));
+      gap: 28px;
+      margin-top: 48px;
+    }
+    .chart-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: all 0.35s ease;
+      position: relative;
+    }
+    .chart-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .chart-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--glass-border);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+    }
+    .chart-card:hover::before { opacity: 1; }
+
+    .chart-card.wide {
+      grid-column: 1 / -1;
+    }
+    .chart-img-wrap {
+      background: #fff;
+      padding: 4px;
+      border-radius: 0;
+    }
+    .chart-img-wrap img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 0;
+    }
+    .chart-body {
+      padding: 22px 26px 26px;
+    }
+    .chart-num {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--primary-light);
+      margin-bottom: 6px;
+    }
+    .chart-title {
+      font-family: var(--font-heading);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+    .chart-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+    .insight-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 12px;
+      border-radius: 100px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .chip-green  { background: rgba(0,212,170,0.12); color: var(--accent2); border: 1px solid rgba(0,212,170,0.22); }
+    .chip-purple { background: rgba(108,99,255,0.12); color: var(--primary-light); border: 1px solid rgba(108,99,255,0.22); }
+    .chip-pink   { background: rgba(255,107,157,0.12); color: #FF8EB5; border: 1px solid rgba(255,107,157,0.22); }
+    .chip-gold   { background: rgba(255,184,0,0.12); color: #FFD443; border: 1px solid rgba(255,184,0,0.22); }
+    .chip-blue   { background: rgba(80,180,255,0.12); color: #70C4FF; border: 1px solid rgba(80,180,255,0.22); }
+
+    /* Summary stats bar */
+    .summary-strip {
+      background: var(--bg-card);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: 28px 40px;
+      display: flex;
+      gap: 0;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      margin-top: 48px;
+      position: relative;
+      overflow: hidden;
+    }
+    .summary-strip::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(108,99,255,0.05) 0%, rgba(255,107,157,0.04) 100%);
+    }
+    .strip-stat { text-align: center; position: relative; z-index: 1; padding: 0 20px; }
+    .strip-stat + .strip-stat {
+      border-left: 1px solid var(--border);
+    }
+    .strip-num {
+      font-family: var(--font-heading);
+      font-size: 2.2rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--primary-light), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .strip-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    /* Category tabs */
+    .tab-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 40px;
+      margin-bottom: 8px;
+    }
+    .tab-btn {
+      padding: 9px 20px;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1.5px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      transition: all 0.2s;
+      font-family: var(--font-body);
+    }
+    .tab-btn:hover { border-color: var(--primary); color: var(--text); }
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-color: transparent;
+      color: white;
+      box-shadow: 0 4px 16px rgba(108,99,255,0.35);
+    }
+
+    @media (max-width: 700px) {
+      .chart-grid { grid-template-columns: 1fr; }
+      .summary-strip { flex-direction: column; gap: 20px; }
+      .strip-stat + .strip-stat { border-left: none; border-top: 1px solid var(--border); padding-top: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span>🎓</span> ScholarPath</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="form.html">Find Scholarships</a></li>
+      <li><a href="analysis.html" class="active">Analysis</a></li>
+      <li><a href="courses.html">Free Courses</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="form.html" class="nav-cta btn">Get Recommendations →</a></li>
+    </ul>
+    <div class="nav-toggle" id="navToggle" onclick="toggleNav()">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="analysis-hero section-sm">
+  <div class="container">
+    <div class="survey-badge">📊 Google Form Survey · 2026</div>
+    <h1 class="section-title" style="font-size:clamp(2rem,5vw,3.4rem);">Student Survey Insights</h1>
+    <p class="section-subtitle" style="margin:0 auto;text-align:center;max-width:600px;">
+      A comprehensive analysis of student challenges, awareness, and aspirations — collected through a Google Form survey across India.
+    </p>
+
+    <!-- Quick stats -->
+    <div class="summary-strip">
+      <div class="strip-stat">
+        <div class="strip-num">150+</div>
+        <div class="strip-label">Responses Collected</div>
+      </div>
+      <div class="strip-stat">
+        <div class="strip-num">11</div>
+        <div class="strip-label">Survey Dimensions</div>
+      </div>
+      <div class="strip-stat">
+        <div class="strip-num">6</div>
+        <div class="strip-label">Key Topic Areas</div>
+      </div>
+      <div class="strip-stat">
+        <div class="strip-num">100%</div>
+        <div class="strip-label">Primary Research</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FILTER TABS -->
+<section style="padding: 0 0 8px;">
+  <div class="container">
+    <div class="tab-bar" id="tabBar">
+      <button class="tab-btn active" onclick="filterCharts('all', this)">All Charts</button>
+      <button class="tab-btn" onclick="filterCharts('scholarship', this)">📋 Scholarships</button>
+      <button class="tab-btn" onclick="filterCharts('skill', this)">💡 Skills</button>
+      <button class="tab-btn" onclick="filterCharts('career', this)">🚀 Career</button>
+      <button class="tab-btn" onclick="filterCharts('awareness', this)">🔍 Awareness</button>
+      <button class="tab-btn" onclick="filterCharts('digital', this)">📱 Digital</button>
+    </div>
+  </div>
+</section>
+
+<!-- CHARTS GRID -->
+<section class="section" style="padding-top: 24px;">
+  <div class="container">
+    <div class="chart-grid" id="chartGrid">
+
+      <!-- 1. Scholarship Challenges -->
+      <div class="chart-card wide fade-up" data-cat="scholarship">
+        <div class="chart-img-wrap">
+          <img src="png/scholarship_challenges.png" alt="Scholarship-Related Challenges faced by students" loading="lazy"/>
+        </div>
+        <div class="chart-body">
+          <div class="chart-num">Chart 01 · Scholarship</div>
+          <h2 class="chart-title">Scholarship-Related Challenges</h2>
+          <p class="chart-desc">
+            Students face multiple barriers when applying for scholarships. <strong>Missing application deadlines (45 students)</strong> is the top challenge, followed equally by lack of form-filling guidance, not knowing eligibility, and complex documentation (40 each). This directly motivated the core features of ScholarPath — deadline reminders, eligibility matching, and document checklists.
+          </p>
+          <div class="insight-chips">
+            <span class="chip chip-purple">⏰ Deadline Awareness #1 Issue</span>
+            <span class="chip chip-pink">📄 Documentation Complexity</span>
+            <span class="chip chip-green">✅ Eligibility Matching Needed</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Government Scheme Awareness -->
+      <div class="chart-card fade-up" data-cat="awareness scholarship">
+        <div class="chart-img-wrap">
+          <img src="png/government_scheme_awareness.png" alt="Government Scheme Awareness among students" loading="lazy"/>
+        </div>
+        <div class="chart-body">
+          <div class="chart-num">Chart 02 · Awareness</div>
+          <h2 class="chart-title">Government Scheme Awareness</h2>
+          <p class="chart-desc">
+            A significant portion of surveyed students lack awareness about government scholarship schemes and educational programs. This highlights the critical gap ScholarPath aims to bridge by making government schemes discoverable and accessible.
+          </p>
+          <div class="insight-chips">
+            <span class="chip chip-gold">⚠️ Low Awareness Detected</span>
+            <span class="chip chip-purple">🏛️ Govt Schemes Undiscovered</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. CEP Awareness -->
+      <div class="chart-card fade-up" data-cat="awareness skill">
+        <div class="chart-img-wrap">
+          <img src="png/cep_awareness.png" alt="Continuing Education Program Awareness" loading="lazy"/>
+        </div>
+        <div class="chart-body">
+          <div class="chart-num">Chart 03 · Awareness</div>
+          <h2 class="chart-title">CEP (Continuing Education Program) Awareness</h2>
+          <p class="chart-desc">
+            Awareness about Continuing Education Programs among students remains limited. Many students are unaware of upskilling pathways available to them through government and private initiatives, pointing to a clear need for a centralized information hub.
+          </p>
+          <div class="insight-chips">
+            <span class="chip chip-blue">📚 CEP Awareness Gap</span>
+            <span class="chip chip-green">🎯 Upskilling Pathways Needed</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Skill Development -->
+      <div class="chart-card wide fade-up" data-cat="skill">
+        <div class="chart-img-wrap">
+          <img src="png/skill_development.png" alt="Most Needed Skill Development areas" loading="lazy"/>
+        </div>
+        <div class="chart-body">
+          <div class="chart-num">Chart 04 · Skills</div>
+          <h2 class="chart-title">Most Needed Skill Development Areas</h2>
+          <p class="chart-desc">
+            All major skill categories received near-equal demand (~138 students each) — <strong>Basic computer/digital literacy, Professional writing, Coding/technical skills</strong> and <strong>Coding or technical skills</strong> top the list. English communication (122) and Interview preparation (118) follow closely. This data shaped the Free Courses page, ensuring coverage of all high-demand skill areas.
+          </p>
+          <div class="insight-chips">
+            <span class="chip chip-purple">💻 Digital Literacy: 138 students</span>
+            <span class="chip chip-pink">✍️ Professional Writing: 138 students</span>
+            <span class="chip chip-green">⌨️ Coding Skills: 138 students</span>
+            <span class="chip chip-blue">🗣️ English: 122 students</span>
+            <span class="chip chip-gold">🎤 Interviews: 118 students</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Career Guidance -->
+      <div class="chart-card fade-up" data-cat="career">
+        <div class="chart-img-wrap">
+          <img src="png/career_guidance.png" alt="Career/Business Guidance Clarity among students" loading="lazy"/>
+        </div>
+        <div class="chart-body">
+          <div class="chart-num">Chart 05 · Career</div>
+          <h2 class="chart-title">Career/Business Guidance Clarity</h2>
+          <p class="chart-desc">
+            Only <strong>26.4%</strong> of students are "Very clear" about their career path. A combined <strong>63%</strong> are either completely unsure (24.4%), have an idea but don't know the steps (25.7%), or somewhat clear (12.9%). This underscores the need for structured career guidance resources.
+          </p>
+          <div class="insight-chips">
+            <span class="chip chip-green">✅ Very Clear: 26.4%</span>
+            <span class="chip chip-gold">⚡ Has Idea, No Steps: 25.7%</span>
+            <span class="chip chip-pink">❓ Completely Unsure: 24.4%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. Major Challenges -->
+      <div class="chart-card fade-up" data-cat="career scholarship">
+        <div class="chart-img-wrap">
+          <img src="png/major_challenges.png" alt="Major Challenges Faced by Students" loading="lazy"/>
+        </div>
+        <div class="chart-body">
+          <div class="chart-num">Chart 06 · Career</div>
+          <h2 class="chart-title">Major Challenges Faced by Students</h2>
+          <p class="chart-desc">
+            "Not having proper guidance or support" (28 students) leads student challenges, followed by confusion around which scholarship is best (23) and insufficient knowledge (23). These challenges map directly to features like personalized recommendations and the career guidance section.
+          </p>
+          <div class="insight-chips">
+            <span class="chip chip-pink">🤝 Guidance Gap: Top Issue</span>
+            <span class="chip chip-purple">🔎 Which Scholarship?: 23</span>
+            <span class="chip chip-gold">📖 Knowledge Deficit: 23</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7. Information Sources -->
+      <div class="chart-card fade-up" data-cat="digital awareness">
+        <div class="chart-img-wrap">
+          <img src="png/information_sources.png" alt="Sources students use to find scholarship information" loading="lazy"/>
+        </div>
+        <div class="chart-body">
+          <div class="chart-num">Chart 07 · Digital</div>
+          <h2 class="chart-title">Information Sources Used by Students</h2>
+          <p class="chart-desc">
+            Understanding where students currently find scholarship information helps identify the most effective outreach channels and validates building a dedicated web platform as the primary discovery tool.
+          </p>
+          <div class="insight-chips">
+            <span class="chip chip-blue">📱 Social Media Prominent</span>
+            <span class="chip chip-purple">🌐 Web Search Used</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 8. Internet Reliability -->
+      <div class="chart-card fade-up" data-cat="digital">
+        <div class="chart-img-wrap">
+          <img src="png/internet_reliability.png" alt="Internet reliability among students" loading="lazy"/>
+        </div>
+        <div class="chart-body">
+          <div class="chart-num">Chart 08 · Digital</div>
+          <h2 class="chart-title">Internet Reliability Among Students</h2>
+          <p class="chart-desc">
+            Internet access reliability directly impacts a student's ability to apply online for scholarships. This data helps assess the digital divide and guides decisions on making the platform lightweight and mobile-friendly.
+          </p>
+          <div class="insight-chips">
+            <span class="chip chip-gold">⚡ Connectivity Varies</span>
+            <span class="chip chip-green">📱 Mobile-First Design Needed</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 9. Mentor Access -->
+      <div class="chart-card fade-up" data-cat="career">
+        <div class="chart-img-wrap">
+          <img src="png/mentor_access.png" alt="Mentor access availability for students" loading="lazy"/>
+        </div>
+        <div class="chart-body">
+          <div class="chart-num">Chart 09 · Career</div>
+          <h2 class="chart-title">Mentor Access & Availability</h2>
+          <p class="chart-desc">
+            Access to mentors and career advisors is limited for many students, particularly those from rural and semi-urban backgrounds. This reinforces the platform's role as a digital mentor — providing structured guidance without requiring physical access.
+          </p>
+          <div class="insight-chips">
+            <span class="chip chip-pink">🧑‍🏫 Limited Mentor Access</span>
+            <span class="chip chip-purple">🤖 Digital Guidance Critical</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 10. Platform Chart -->
+      <div class="chart-card fade-up" data-cat="digital skill">
+        <div class="chart-img-wrap">
+          <img src="png/platform_chart.png" alt="Platform preferences for learning and skill development" loading="lazy"/>
+        </div>
+        <div class="chart-body">
+          <div class="chart-num">Chart 10 · Digital</div>
+          <h2 class="chart-title">Learning Platform Preferences</h2>
+          <p class="chart-desc">
+            Students' preferred platforms for learning and skill development reveal strong demand for accessible, free online resources. This data directly shaped the curation of courses on the Free Courses page.
+          </p>
+          <div class="insight-chips">
+            <span class="chip chip-green">🎓 Online Learning Preferred</span>
+            <span class="chip chip-blue">💻 Free Resources Demanded</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 11. Desired CEP Resources -->
+      <div class="chart-card wide fade-up" data-cat="skill awareness">
+        <div class="chart-img-wrap">
+          <img src="png/desired_cep_resources.png" alt="Desired CEP resources students want" loading="lazy"/>
+        </div>
+        <div class="chart-body">
+          <div class="chart-num">Chart 11 · Skills & Awareness</div>
+          <h2 class="chart-title">Desired CEP Resources Students Want</h2>
+          <p class="chart-desc">
+            When asked what CEP resources they most desire, students' responses highlight a strong appetite for structured, accessible, and free educational content. This finding validates ScholarPath's Free Courses page as a high-impact addition that directly serves student demand.
+          </p>
+          <div class="insight-chips">
+            <span class="chip chip-purple">📚 Structured Content Wanted</span>
+            <span class="chip chip-green">🆓 Free Resources Priority</span>
+            <span class="chip chip-gold">🎯 Practical Skills Focus</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end chart-grid -->
+
+    <!-- Key Takeaways -->
+    <div style="margin-top: 64px;">
+      <div style="text-align:center; margin-bottom: 40px;">
+        <div class="section-label">Conclusions</div>
+        <h2 class="section-title" style="-webkit-text-fill-color:var(--text);background:none;">Key Takeaways</h2>
+      </div>
+      <div class="grid-3">
+        <div class="card" style="border-top: 3px solid var(--primary);">
+          <div style="font-size:2rem;margin-bottom:14px;">📋</div>
+          <h3 style="font-family:var(--font-heading);font-size:1.1rem;margin-bottom:10px;">Deadline & Eligibility Gap</h3>
+          <p style="color:var(--text-muted);font-size:0.88rem;line-height:1.7;">45 students miss deadlines and 40 don't know their eligibility — making ScholarPath's smart matching and deadline tracking essential.</p>
+        </div>
+        <div class="card" style="border-top: 3px solid var(--accent);">
+          <div style="font-size:2rem;margin-bottom:14px;">💡</div>
+          <h3 style="font-family:var(--font-heading);font-size:1.1rem;margin-bottom:10px;">Massive Skill Demand</h3>
+          <p style="color:var(--text-muted);font-size:0.88rem;line-height:1.7;">Digital literacy, coding, and professional writing are equally needed by 138 students each — validating a dedicated Free Courses page.</p>
+        </div>
+        <div class="card" style="border-top: 3px solid var(--accent2);">
+          <div style="font-size:2rem;margin-bottom:14px;">🚀</div>
+          <h3 style="font-family:var(--font-heading);font-size:1.1rem;margin-bottom:10px;">Career Clarity Crisis</h3>
+          <p style="color:var(--text-muted);font-size:0.88rem;line-height:1.7;">Only 26.4% are "Very clear" on their career path — 63% need structured guidance, underscoring the need for mentorship and resource tools.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="glow-card" style="text-align:center; margin-top:64px;">
+      <div style="font-size:2.5rem;margin-bottom:16px;">🎯</div>
+      <h2 style="font-family:var(--font-heading);font-size:1.9rem;font-weight:800;margin-bottom:12px;">These Insights Power ScholarPath</h2>
+      <p style="color:var(--text-muted);max-width:500px;margin:0 auto 28px;line-height:1.7;">Every feature on this platform was designed based on real student pain points discovered in this survey.</p>
+      <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+        <a href="form.html" class="btn btn-primary">Find My Scholarships →</a>
+        <a href="courses.html" class="btn btn-outline">Browse Free Courses</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="nav-logo" style="font-size:1.3rem;">🎓 ScholarPath</a>
+        <p>Empowering Indian students to discover and access educational scholarships they deserve. Free, fast, and personalized.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Quick Links</h5>
+        <a href="index.html">Home</a>
+        <a href="form.html">Find Scholarships</a>
+        <a href="analysis.html">Survey Analysis</a>
+        <a href="courses.html">Free Courses</a>
+        <a href="about.html">About Us</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h5>Categories</h5>
+        <a href="form.html">Merit Based</a>
+        <a href="form.html">SC / ST</a>
+        <a href="form.html">Minority</a>
+        <a href="form.html">Girls</a>
+      </div>
+      <div class="footer-col">
+        <h5>Resources</h5>
+        <a href="https://scholarships.gov.in" target="_blank">NSP Portal</a>
+        <a href="https://www.aicte-india.org" target="_blank">AICTE</a>
+        <a href="https://maef.net.in" target="_blank">MAEF</a>
+        <a href="https://dst.gov.in" target="_blank">DST India</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 ScholarPath. All rights reserved.</p>
+      <p style="color:var(--text-dim);font-size:0.8rem;">Powered by FastAPI + MySQL</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleNav() {
+  document.getElementById('navLinks').classList.toggle('open');
+}
+
+// Filter charts by category
+function filterCharts(cat, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.chart-card').forEach(card => {
+    if (cat === 'all') {
+      card.style.display = '';
+    } else {
+      const cats = card.dataset.cat || '';
+      card.style.display = cats.includes(cat) ? '' : 'none';
+    }
+  });
+}
+
+// Animate on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('fade-up'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.chart-card, .card, .glow-card').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

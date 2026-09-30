@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Find Your Scholarship — ScholarPath</title>
+  <meta name="description" content="Fill out your profile to get personalized scholarship recommendations. Takes less than 2 minutes."/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    .form-card { max-width: 760px; margin: 0 auto; }
+    .form-step { display: none; }
+    .form-step.active { display: block; animation: fadeUp 0.4s ease; }
+    .form-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border); }
+    .checkbox-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+    .check-pill {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      display: flex; align-items: center; gap: 10px;
+      cursor: pointer; transition: all 0.2s;
+      font-size: 0.9rem;
+    }
+    .check-pill input { display: none; }
+    .check-pill:has(input:checked) { border-color: var(--primary); background: rgba(108,99,255,0.12); color: var(--primary-light); }
+    .check-pill .dot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--border); flex-shrink: 0; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+    .check-pill:has(input:checked) .dot { background: var(--primary); border-color: var(--primary); }
+    .check-pill:has(input:checked) .dot::after { content: '✓'; color: white; font-size: 10px; font-weight: 700; }
+    .form-page-header { text-align: center; margin-bottom: 40px; padding-top: 48px; }
+    .required { color: var(--accent); }
+    .income-display { font-size: 1.1rem; font-weight: 700; color: var(--primary-light); margin-top: 8px; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span>🎓</span> ScholarPath</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="form.html" class="active">Find Scholarships</a></li>
+      <li><a href="analysis.html">Analysis</a></li>
+      <li><a href="courses.html">Free Courses</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="form.html" class="nav-cta btn">Get Recommendations →</a></li>
+    </ul>
+    <div class="nav-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<div style="position:relative;z-index:1;padding-bottom:80px;">
+  <div class="form-page-header">
+    <div class="section-label">Step-by-step Form</div>
+    <h1 style="font-family:var(--font-heading);font-size:2.4rem;font-weight:800;margin-bottom:12px;">Find Your Perfect Scholarship</h1>
+    <p style="color:var(--text-muted);font-size:1rem;max-width:480px;margin:0 auto;">Answer a few questions about your profile and we'll show you the scholarships you qualify for.</p>
+  </div>
+
+  <!-- STEP INDICATOR -->
+  <div class="steps" id="stepIndicator">
+    <div class="step-item active" id="si-1">
+      <div class="step-num">1</div>
+      <span class="step-label">Education</span>
+    </div>
+    <div class="step-line" id="sl-1"></div>
+    <div class="step-item" id="si-2">
+      <div class="step-num">2</div>
+      <span class="step-label">Personal</span>
+    </div>
+    <div class="step-line" id="sl-2"></div>
+    <div class="step-item" id="si-3">
+      <div class="step-num">3</div>
+      <span class="step-label">Category</span>
+    </div>
+    <div class="step-line" id="sl-3"></div>
+    <div class="step-item" id="si-4">
+      <div class="step-num">4</div>
+      <span class="step-label">Special</span>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="form-card">
+      <form id="scholarshipForm">
+
+        <!-- ──── STEP 1: Education ──── -->
+        <div class="form-step active" id="step-1">
+          <div class="glow-card">
+            <h2 style="font-family:var(--font-heading);font-size:1.5rem;font-weight:700;margin-bottom:6px;">📚 Education Details</h2>
+            <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:28px;">Tell us about your current education level and marks.</p>
+
+            <div class="form-group">
+              <label class="form-label">Current Education Level <span class="required">*</span></label>
+              <select class="form-control" id="education_level" name="education_level" required>
+                <option value="" disabled selected>Select your level</option>
+                <option value="10th">10th Standard</option>
+                <option value="12th">12th Standard</option>
+                <option value="undergraduate">Undergraduate (UG)</option>
+                <option value="postgraduate">Postgraduate (PG)</option>
+                <option value="phd">PhD / Research</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Stream / Course <span class="required">*</span></label>
+              <select class="form-control" id="stream" name="stream">
+                <option value="ALL">All / Not Sure</option>
+                <option value="Science">Science</option>
+                <option value="Arts">Arts / Humanities</option>
+                <option value="Commerce">Commerce</option>
+                <option value="Engineering">Engineering / Technology</option>
+                <option value="Medical">Medical / Healthcare</option>
+                <option value="Law">Law</option>
+                <option value="Agriculture">Agriculture</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Percentage / Marks (Last Exam) <span class="required">*</span></label>
+              <div style="display:flex;align-items:center;gap:16px;">
+                <input type="range" min="0" max="100" value="75" id="percentage" name="percentage" style="flex:1;" oninput="document.getElementById('pct-val').textContent = this.value + '%'"/>
+                <div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:10px;padding:8px 16px;min-width:70px;text-align:center;font-weight:700;color:var(--primary-light);" id="pct-val">75%</div>
+              </div>
+            </div>
+
+            <div class="form-nav">
+              <div></div>
+              <button type="button" class="btn btn-primary" onclick="goStep(2)">Next: Personal Info →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ──── STEP 2: Personal ──── -->
+        <div class="form-step" id="step-2">
+          <div class="glow-card">
+            <h2 style="font-family:var(--font-heading);font-size:1.5rem;font-weight:700;margin-bottom:6px;">👤 Personal Details</h2>
+            <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:28px;">These help us filter state-specific and gender-specific scholarships.</p>
+
+            <div class="grid-2">
+              <div class="form-group">
+                <label class="form-label">Gender <span class="required">*</span></label>
+                <select class="form-control" id="gender" name="gender" required>
+                  <option value="all">Prefer not to say / Any</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">State <span class="required">*</span></label>
+                <select class="form-control" id="state" name="state">
+                  <option value="ALL">All India / National</option>
+                  <option value="Andhra Pradesh">Andhra Pradesh</option>
+                  <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                  <option value="Assam">Assam</option>
+                  <option value="Bihar">Bihar</option>
+                  <option value="Chhattisgarh">Chhattisgarh</option>
+                  <option value="Delhi">Delhi</option>
+                  <option value="Goa">Goa</option>
+                  <option value="Gujarat">Gujarat</option>
+                  <option value="Haryana">Haryana</option>
+                  <option value="Himachal Pradesh">Himachal Pradesh</option>
+                  <option value="Jharkhand">Jharkhand</option>
+                  <option value="Karnataka">Karnataka</option>
+                  <option value="Kerala">Kerala</option>
+                  <option value="Madhya Pradesh">Madhya Pradesh</option>
+                  <option value="Maharashtra">Maharashtra</option>
+                  <option value="Manipur">Manipur</option>
+                  <option value="Meghalaya">Meghalaya</option>
+                  <option value="Mizoram">Mizoram</option>
+                  <option value="Nagaland">Nagaland</option>
+                  <option value="Odisha">Odisha</option>
+                  <option value="Punjab">Punjab</option>
+                  <option value="Rajasthan">Rajasthan</option>
+                  <option value="Sikkim">Sikkim</option>
+                  <option value="Tamil Nadu">Tamil Nadu</option>
+                  <option value="Telangana">Telangana</option>
+                  <option value="Tripura">Tripura</option>
+                  <option value="Uttar Pradesh">Uttar Pradesh</option>
+                  <option value="Uttarakhand">Uttarakhand</option>
+                  <option value="West Bengal">West Bengal</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Annual Family Income</label>
+              <input type="range" min="0" max="1000000" step="10000" value="300000" id="annual_income" name="annual_income"
+                oninput="updateIncome(this.value)"/>
+              <div class="income-display" id="income-display">₹3,00,000 / year</div>
+            </div>
+
+            <div class="form-nav">
+              <button type="button" class="btn btn-outline" onclick="goStep(1)">← Back</button>
+              <button type="button" class="btn btn-primary" onclick="goStep(3)">Next: Category →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ──── STEP 3: Category ──── -->
+        <div class="form-step" id="step-3">
+          <div class="glow-card">
+            <h2 style="font-family:var(--font-heading);font-size:1.5rem;font-weight:700;margin-bottom:6px;">🏷️ Category & Religion</h2>
+            <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:28px;">Many scholarships are reserved for specific categories.</p>
+
+            <div class="form-group">
+              <label class="form-label">Caste Category</label>
+              <div class="checkbox-grid" id="caste-group">
+                <label class="check-pill">
+                  <input type="radio" name="caste" value="ALL" checked/>
+                  <div class="dot"></div> All / General
+                </label>
+                <label class="check-pill">
+                  <input type="radio" name="caste" value="General"/>
+                  <div class="dot"></div> General
+                </label>
+                <label class="check-pill">
+                  <input type="radio" name="caste" value="OBC"/>
+                  <div class="dot"></div> OBC
+                </label>
+                <label class="check-pill">
+                  <input type="radio" name="caste" value="SC"/>
+                  <div class="dot"></div> SC
+                </label>
+                <label class="check-pill">
+                  <input type="radio" name="caste" value="ST"/>
+                  <div class="dot"></div> ST
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-top:24px;">
+              <label class="form-label">Religion</label>
+              <select class="form-control" id="religion" name="religion">
+                <option value="ALL">Any / Prefer not to say</option>
+                <option value="Hindu">Hindu</option>
+                <option value="Muslim">Muslim</option>
+                <option value="Christian">Christian</option>
+                <option value="Sikh">Sikh</option>
+                <option value="Buddhist">Buddhist</option>
+                <option value="Jain">Jain</option>
+                <option value="Parsi">Parsi</option>
+              </select>
+            </div>
+
+            <div class="form-nav">
+              <button type="button" class="btn btn-outline" onclick="goStep(2)">← Back</button>
+              <button type="button" class="btn btn-primary" onclick="goStep(4)">Next: Special Flags →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ──── STEP 4: Special Flags ──── -->
+        <div class="form-step" id="step-4">
+          <div class="glow-card">
+            <h2 style="font-family:var(--font-heading);font-size:1.5rem;font-weight:700;margin-bottom:6px;">⚡ Special Categories</h2>
+            <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:28px;">Select any additional categories that apply. This helps us find more scholarships for you.</p>
+
+            <div class="checkbox-grid">
+              <label class="check-pill">
+                <input type="checkbox" name="has_disability" id="has_disability" value="true"/>
+                <div class="dot"></div> ♿ Differently Abled
+              </label>
+              <label class="check-pill">
+                <input type="checkbox" name="is_sports" id="is_sports" value="true"/>
+                <div class="dot"></div> 🏃 Sports Person
+              </label>
+              <label class="check-pill">
+                <input type="checkbox" name="is_minority" id="is_minority" value="true"/>
+                <div class="dot"></div> 🌙 Minority Community
+              </label>
+            </div>
+
+            <div class="alert alert-info" style="margin-top:28px;">
+              ℹ️ Selecting these will include additional scholarships from those specific categories even if other filters don't perfectly match.
+            </div>
+
+            <div class="form-nav">
+              <button type="button" class="btn btn-outline" onclick="goStep(3)">← Back</button>
+              <button type="submit" class="btn btn-accent btn-lg" id="submitBtn">
+                🔍 Find My Scholarships
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <p>© 2026 ScholarPath. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="js/form.js"></script>
+</body>
+</html>

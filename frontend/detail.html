@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Scholarship Detail — ScholarPath</title>
+  <meta name="description" content="Full details, eligibility, documents, and apply link for this scholarship."/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    .detail-layout { display: flex; gap: 36px; align-items: flex-start; }
+    .detail-main { flex: 1; min-width: 0; }
+    .detail-sidebar { width: 320px; flex-shrink: 0; }
+    .doc-item {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 10px 14px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+    .doc-icon { color: var(--primary-light); font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+    .breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-dim); margin-bottom: 20px; }
+    .breadcrumb a { color: var(--text-muted); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--primary-light); }
+    .breadcrumb span { color: var(--text-dim); }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span>🎓</span> ScholarPath</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="form.html">Find Scholarships</a></li>
+      <li><a href="analysis.html">Analysis</a></li>
+      <li><a href="courses.html">Free Courses</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="form.html" class="nav-cta btn">New Search →</a></li>
+    </ul>
+    <div class="nav-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- Loading state -->
+<div id="loadingState" class="loader" style="min-height:60vh;">
+  <div class="spinner"></div>
+  <p style="color:var(--text-muted);">Loading scholarship details...</p>
+</div>
+
+<!-- Content (hidden until loaded) -->
+<div id="detailContent" style="display:none;">
+
+  <!-- HERO SECTION -->
+  <div class="detail-hero">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span>›</span>
+        <a href="javascript:history.back()">Results</a>
+        <span>›</span>
+        <span id="breadName">Scholarship</span>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap;">
+        <div style="flex:1;min-width:0;">
+          <div id="detailBadge" style="margin-bottom:14px;"></div>
+          <h1 id="detailName" style="font-family:var(--font-heading);font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;line-height:1.2;margin-bottom:8px;"></h1>
+          <p id="detailProvider" style="color:var(--text-muted);font-size:1rem;margin-bottom:20px;"></p>
+          <div class="detail-meta" id="detailMeta"></div>
+        </div>
+        <div id="detailAmountBig" style="flex-shrink:0;background:linear-gradient(135deg,rgba(0,212,170,0.15),rgba(108,99,255,0.1));border:1px solid rgba(0,212,170,0.25);border-radius:var(--radius-lg);padding:20px 28px;text-align:center;min-width:180px;">
+          <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-dim);margin-bottom:6px;">Scholarship Amount</div>
+          <div id="detailAmt" style="font-family:var(--font-heading);font-size:1.8rem;font-weight:900;color:var(--accent2);"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="section-sm">
+    <div class="container">
+      <div class="detail-layout">
+
+        <!-- MAIN -->
+        <div class="detail-main">
+
+          <div class="detail-section">
+            <h3>About This Scholarship</h3>
+            <p id="detailDesc"></p>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="detail-section">
+            <h3>Eligibility Criteria</h3>
+            <p id="detailEligibility"></p>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="detail-section">
+            <h3>Required Documents</h3>
+            <div id="detailDocs"></div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="detail-section">
+            <h3>Quick Facts</h3>
+            <table style="width:100%;border-collapse:collapse;">
+              <tbody id="detailTable"></tbody>
+            </table>
+          </div>
+
+        </div>
+
+        <!-- SIDEBAR -->
+        <div class="detail-sidebar">
+          <div class="apply-box">
+            <div style="font-size:2rem;margin-bottom:8px;">🎓</div>
+            <h3 style="font-family:var(--font-heading);font-weight:700;font-size:1.2rem;">Ready to Apply?</h3>
+            <div id="sidebarAmt" class="amount-big"></div>
+            <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:24px;">Click the button below to go to the official scholarship application portal.</p>
+            <a id="applyLink" href="#" target="_blank" class="btn btn-accent btn-lg" style="width:100%;justify-content:center;">
+              Apply Now →
+            </a>
+            <div id="deadlineInfo" style="margin-top:16px;font-size:0.82rem;text-align:center;"></div>
+          </div>
+
+          <div style="margin-top:20px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;">
+            <h4 style="font-family:var(--font-heading);font-size:1rem;font-weight:700;margin-bottom:14px;">🔍 Search More</h4>
+            <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:16px;">Want to explore other scholarships you may be eligible for?</p>
+            <a href="form.html" class="btn btn-outline btn-sm" style="width:100%;justify-content:center;">← Back to Form</a>
+            <a href="javascript:history.back()" class="btn btn-outline btn-sm" style="width:100%;justify-content:center;margin-top:8px;">← All Results</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="errorState" style="display:none;">
+  <div class="empty-state" style="min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+    <div class="icon">❌</div>
+    <h3>Scholarship Not Found</h3>
+    <p>This scholarship may have been removed or the link is invalid.</p>
+    <a href="form.html" class="btn btn-primary" style="margin-top:20px;">Find Scholarships</a>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <p>© 2026 ScholarPath. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="js/detail.js"></script>
+</body>
+</html>

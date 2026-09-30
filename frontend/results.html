@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Scholarship Recommendations — ScholarPath</title>
+  <meta name="description" content="Your personalized scholarship recommendations based on your profile."/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    .results-header {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 48px 0 36px;
+      position: relative; z-index: 1;
+    }
+    .filter-bar {
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 20px;
+      margin-bottom: 28px;
+    }
+    .filter-bar label { font-size: 0.82rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; }
+    .filter-select {
+      background: rgba(255,255,255,0.06); border: 1px solid var(--border);
+      border-radius: 8px; padding: 6px 12px; color: var(--text);
+      font-size: 0.88rem; cursor: pointer; outline: none;
+    }
+    .result-count {
+      font-family: var(--font-heading);
+      font-size: 1.1rem; color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .result-count strong { color: var(--primary-light); font-size: 1.4rem; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span>🎓</span> ScholarPath</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="form.html" class="active">Find Scholarships</a></li>
+      <li><a href="analysis.html">Analysis</a></li>
+      <li><a href="courses.html">Free Courses</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="form.html" class="nav-cta btn">New Search →</a></li>
+    </ul>
+    <div class="nav-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<div class="results-header">
+  <div class="container">
+    <div class="section-label">Personalized For You</div>
+    <h1 style="font-family:var(--font-heading);font-size:2.2rem;font-weight:800;margin-bottom:8px;">Your Scholarship Recommendations</h1>
+    <p style="color:var(--text-muted);">Based on your profile, here are the scholarships you may be eligible for.</p>
+    <div id="profileTags" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;"></div>
+  </div>
+</div>
+
+<div class="section-sm">
+  <div class="container">
+
+    <!-- Filter bar -->
+    <div class="filter-bar">
+      <label>Sort by:</label>
+      <select class="filter-select" id="sortSelect" onchange="sortResults()">
+        <option value="default">Default</option>
+        <option value="amount">Amount (High to Low)</option>
+        <option value="deadline">Deadline (Soonest)</option>
+        <option value="name">Name A-Z</option>
+      </select>
+      <label style="margin-left:12px;">Category:</label>
+      <select class="filter-select" id="catFilter" onchange="filterByCategory()">
+        <option value="all">All Categories</option>
+        <option value="merit">Merit</option>
+        <option value="need">Need Based</option>
+        <option value="state">State</option>
+        <option value="minority">Minority</option>
+        <option value="disability">Disability</option>
+        <option value="sports">Sports</option>
+      </select>
+      <a href="form.html" class="btn btn-outline btn-sm" style="margin-left:auto;">← Modify Search</a>
+    </div>
+
+    <div class="result-count" id="resultCount"></div>
+
+    <!-- Results grid -->
+    <div class="grid-auto" id="resultsGrid">
+      <div class="loader">
+        <div class="spinner"></div>
+        <p style="color:var(--text-muted);">Loading recommendations...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <p>© 2026 ScholarPath. All rights reserved.</p>
+      <a href="form.html" class="btn btn-outline btn-sm">Search Again</a>
+    </div>
+  </div>
+</footer>
+
+<script src="js/results.js"></script>
+</body>
+</html>

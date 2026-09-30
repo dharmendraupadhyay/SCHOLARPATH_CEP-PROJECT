@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Free Courses — ScholarPath | Learn Skills for Free</title>
+  <meta name="description" content="Discover hand-picked free online courses in coding, communication, digital literacy, and more — helping students build skills at zero cost."/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    /* ── FREE COURSES EXTRAS ── */
+    .courses-hero {
+      padding: 72px 0 56px;
+      text-align: center;
+      position: relative;
+    }
+    .courses-hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 200px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    }
+    .free-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,107,157,0.1);
+      border: 1px solid rgba(255,107,157,0.25);
+      border-radius: 100px;
+      padding: 6px 18px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #FF8EB5;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 24px;
+    }
+
+    /* Search and filter bar */
+    .search-filter-bar {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+    .search-box {
+      flex: 1;
+      min-width: 240px;
+      position: relative;
+    }
+    .search-box input {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 16px 12px 44px;
+      color: var(--text);
+      font-size: 0.95rem;
+      font-family: var(--font-body);
+      outline: none;
+      transition: all 0.2s;
+    }
+    .search-box input:focus {
+      border-color: var(--accent);
+      background: rgba(255,107,157,0.06);
+      box-shadow: 0 0 0 3px rgba(255,107,157,0.12);
+    }
+    .search-box input::placeholder { color: var(--text-dim); }
+    .search-icon {
+      position: absolute;
+      left: 14px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-dim);
+      font-size: 1rem;
+    }
+    .filter-select {
+      background: rgba(255,255,255,0.05);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      color: var(--text);
+      font-size: 0.9rem;
+      font-family: var(--font-body);
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .filter-select:focus { border-color: var(--primary); }
+    .filter-select option { background: #1a1b3e; }
+
+    /* Results count */
+    .results-count {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      margin-bottom: 24px;
+    }
+    .results-count strong { color: var(--primary-light); }
+
+    /* Course cards grid */
+    .courses-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    /* Individual course card */
+    .course-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .course-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      transition: opacity 0.3s;
+      opacity: 0;
+    }
+    .course-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--glass-border);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+    }
+    .course-card:hover::before { opacity: 1; }
+
+    /* Color themes per category */
+    .course-card[data-cat="coding"]::before        { background: linear-gradient(90deg, #6C63FF, #8B85FF); }
+    .course-card[data-cat="digital"]::before       { background: linear-gradient(90deg, #00D4AA, #00B89A); }
+    .course-card[data-cat="communication"]::before { background: linear-gradient(90deg, #FF6B9D, #FF8E53); }
+    .course-card[data-cat="career"]::before        { background: linear-gradient(90deg, #FFB800, #FF8E53); }
+    .course-card[data-cat="data"]::before          { background: linear-gradient(90deg, #50B4FF, #6C63FF); }
+    .course-card[data-cat="design"]::before        { background: linear-gradient(90deg, #FF6B9D, #C966FF); }
+    .course-card[data-cat="writing"]::before       { background: linear-gradient(90deg, #00D4AA, #50B4FF); }
+    .course-card[data-cat="entrepreneurship"]::before { background: linear-gradient(90deg, #FFB800, #FF6B9D); }
+
+    .course-banner {
+      height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.8rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .course-banner::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.25);
+    }
+    .course-banner-emoji {
+      position: relative;
+      z-index: 1;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4));
+    }
+
+    .course-body {
+      padding: 22px 22px 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .course-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .platform-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .free-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: rgba(0,212,170,0.15);
+      color: var(--accent2);
+      border: 1px solid rgba(0,212,170,0.25);
+    }
+    .course-name {
+      font-family: var(--font-heading);
+      font-size: 1.07rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+      line-height: 1.35;
+    }
+    .course-desc {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+      margin-bottom: 14px;
+      flex: 1;
+    }
+    .course-skill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      margin-bottom: 18px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 5px 10px;
+    }
+    .course-footer {
+      padding: 0 22px 22px;
+    }
+    .learn-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 12px 24px;
+      border-radius: var(--radius);
+      font-weight: 700;
+      font-size: 0.92rem;
+      text-decoration: none;
+      transition: all 0.25s ease;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-body);
+      letter-spacing: 0.02em;
+    }
+    .learn-btn-coding        { background: linear-gradient(135deg, #6C63FF, #8B85FF); color: white; box-shadow: 0 4px 16px rgba(108,99,255,0.35); }
+    .learn-btn-digital       { background: linear-gradient(135deg, #00D4AA, #00B89A); color: white; box-shadow: 0 4px 16px rgba(0,212,170,0.35); }
+    .learn-btn-communication { background: linear-gradient(135deg, #FF6B9D, #FF8E53); color: white; box-shadow: 0 4px 16px rgba(255,107,157,0.35); }
+    .learn-btn-career        { background: linear-gradient(135deg, #FFB800, #FF8E53); color: white; box-shadow: 0 4px 16px rgba(255,184,0,0.35); }
+    .learn-btn-data          { background: linear-gradient(135deg, #50B4FF, #6C63FF); color: white; box-shadow: 0 4px 16px rgba(80,180,255,0.35); }
+    .learn-btn-design        { background: linear-gradient(135deg, #FF6B9D, #C966FF); color: white; box-shadow: 0 4px 16px rgba(201,102,255,0.35); }
+    .learn-btn-writing       { background: linear-gradient(135deg, #00D4AA, #50B4FF); color: white; box-shadow: 0 4px 16px rgba(0,212,170,0.3); }
+    .learn-btn-entrepreneurship { background: linear-gradient(135deg, #FFB800, #FF6B9D); color: white; box-shadow: 0 4px 16px rgba(255,107,157,0.3); }
+    .learn-btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
+
+    /* Category filter tabs */
+    .cat-tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+    .cat-tab {
+      padding: 8px 18px;
+      border-radius: 100px;
+      font-size: 0.83rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1.5px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      transition: all 0.2s;
+      font-family: var(--font-body);
+    }
+    .cat-tab:hover { border-color: var(--primary); color: var(--text); }
+    .cat-tab.active {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-color: transparent;
+      color: white;
+      box-shadow: 0 4px 16px rgba(108,99,255,0.35);
+    }
+
+    /* Empty state */
+    .no-results {
+      text-align: center;
+      padding: 80px 20px;
+      display: none;
+    }
+    .no-results .icon { font-size: 3.5rem; margin-bottom: 16px; opacity: 0.5; }
+
+    @media (max-width: 640px) {
+      .courses-grid { grid-template-columns: 1fr; }
+      .search-filter-bar { flex-direction: column; }
+      .search-box { width: 100%; }
+      .filter-select { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span>🎓</span> ScholarPath</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="form.html">Find Scholarships</a></li>
+      <li><a href="analysis.html">Analysis</a></li>
+      <li><a href="courses.html" class="active">Free Courses</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="form.html" class="nav-cta btn">Get Recommendations →</a></li>
+    </ul>
+    <div class="nav-toggle" id="navToggle" onclick="toggleNav()">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="courses-hero section-sm">
+  <div class="hero-bg-orbs">
+    <div class="orb orb-1" style="background:rgba(255,107,157,0.08);"></div>
+    <div class="orb orb-2" style="background:rgba(108,99,255,0.07);"></div>
+  </div>
+  <div class="container" style="position:relative;z-index:1;">
+    <div class="free-badge">🆓 100% Free · No Sign-up Required</div>
+    <h1 class="section-title" style="font-size:clamp(2rem,5vw,3.4rem);">Free Courses for Students</h1>
+    <p class="section-subtitle" style="margin:0 auto;text-align:center;max-width:620px;">
+      Hand-picked free courses from the world's best platforms — covering coding, communication, digital skills, career prep, and more. Start learning today, absolutely free.
+    </p>
+    <div style="display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin-top:32px;">
+      <div style="text-align:center;">
+        <div style="font-family:var(--font-heading);font-size:1.8rem;font-weight:900;color:var(--accent);">25+</div>
+        <div style="font-size:0.78rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.08em;">Curated Courses</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-family:var(--font-heading);font-size:1.8rem;font-weight:900;color:var(--primary-light);">8</div>
+        <div style="font-size:0.78rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.08em;">Skill Categories</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-family:var(--font-heading);font-size:1.8rem;font-weight:900;color:var(--accent2);">₹0</div>
+        <div style="font-size:0.78rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.08em;">Cost to You</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COURSES SECTION -->
+<section class="section" style="padding-top:32px;">
+  <div class="container">
+
+    <!-- Search + Filter -->
+    <div class="search-filter-bar">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="courseSearch" placeholder="Search courses, skills, platforms…" oninput="filterCourses()"/>
+      </div>
+      <select class="filter-select" id="platformFilter" onchange="filterCourses()">
+        <option value="">All Platforms</option>
+        <option value="coursera">Coursera</option>
+        <option value="edx">edX</option>
+        <option value="google">Google</option>
+        <option value="microsoft">Microsoft</option>
+        <option value="nptel">NPTEL</option>
+        <option value="swayam">SWAYAM</option>
+        <option value="khan">Khan Academy</option>
+        <option value="freecodecamp">freeCodeCamp</option>
+        <option value="harvard">Harvard Online</option>
+        <option value="linkedin">LinkedIn Learning</option>
+      </select>
+      <select class="filter-select" id="levelFilter" onchange="filterCourses()">
+        <option value="">All Levels</option>
+        <option value="beginner">Beginner</option>
+        <option value="intermediate">Intermediate</option>
+        <option value="advanced">Advanced</option>
+      </select>
+    </div>
+
+    <!-- Category Tabs -->
+    <div class="cat-tabs" id="catTabs">
+      <button class="cat-tab active" onclick="setCat('all', this)">🌟 All</button>
+      <button class="cat-tab" onclick="setCat('coding', this)">💻 Coding</button>
+      <button class="cat-tab" onclick="setCat('digital', this)">📱 Digital Literacy</button>
+      <button class="cat-tab" onclick="setCat('communication', this)">🗣️ Communication</button>
+      <button class="cat-tab" onclick="setCat('career', this)">🚀 Career Prep</button>
+      <button class="cat-tab" onclick="setCat('data', this)">📊 Data & AI</button>
+      <button class="cat-tab" onclick="setCat('design', this)">🎨 Design</button>
+      <button class="cat-tab" onclick="setCat('writing', this)">✍️ Writing</button>
+      <button class="cat-tab" onclick="setCat('entrepreneurship', this)">💡 Entrepreneurship</button>
+    </div>
+
+    <div class="results-count" id="resultsCount"><strong id="countNum">25</strong> courses found</div>
+
+    <!-- Course Cards Grid -->
+    <div class="courses-grid" id="coursesGrid">
+
+      <!-- CODING COURSES -->
+      <div class="course-card" data-cat="coding" data-platform="freecodecamp" data-level="beginner" data-search="coding web html css javascript responsive">
+        <div class="course-banner" style="background:linear-gradient(135deg,#1a1b4b,#3d3a8c);">
+          <span class="course-banner-emoji">💻</span>
+        </div>
+        <div class="course-body">
+          <div class="course-meta">
+            <span class="platform-tag" style="background:rgba(6,167,125,0.15);color:#06a77d;border:1px solid rgba(6,167,125,0.25);">freeCodeCamp</span>
+            <span class="free-pill">🆓 Free</span>
+          </div>
+          <div class="course-name">Responsive Web Design Certification</div>
+          <div class="course-desc">Learn HTML5 and CSS3 by building 15 projects. Covers flexbox, grid, and responsive design principles. Perfect for absolute beginners with no prior coding experience.</div>
+          <div class="course-skill">🏷️ HTML · CSS · Responsive Design · Beginner</div>
+        </div>
+        <div class="course-footer">
+          <a href="https://www.freecodecamp.org/learn/2022/responsive-web-design/" target="_blank" rel="noopener noreferrer" class="learn-btn learn-btn-coding">Learn Now →</a>
+        </div>
+      </div>
+
+      <div class="course-card" data-cat="coding" data-platform="freecodecamp" data-level="beginner" data-search="coding javascript js algorithms data structures">
+        <div class="course-banner" style="background:linear-gradient(135deg,#2d1b69,#5c3db8);">
+          <span class="course-banner-emoji">⚡</span>
+        </div>
+        <div class="course-body">
+          <div class="course-meta">
+            <span class="platform-tag" style="background:rgba(6,167,125,0.15);color:#06a77d;border:1px solid rgba(6,167,125,0.25);">freeCodeCamp</span>
+            <span class="free-pill">🆓 Free</span>
+          </div>
+          <div class="course-name">JavaScript Algorithms & Data Structures</div>
+          <div class="course-desc">Master JavaScript fundamentals, ES6+, regular expressions, debugging, data structures, OOP, and functional programming with hands-on challenges.</div>
+          <div class="course-skill">🏷️ JavaScript · Algorithms · Beginner to Intermediate</div>
+        </div>
+        <div class="course-footer">
+          <a href="https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures/" target="_blank" rel="noopener noreferrer" class="learn-btn learn-btn-coding">Learn Now →</a>
+        </div>
+      </div>
+
+      <div class="course-card" data-cat="coding" data-platform="nptel" data-level="beginner" data-search="coding python programming nptel iit">
+        <div class="course-banner" style="background:linear-gradient(135deg,#1a2f5a,#1a5a9e);">
+          <span class="course-banner-emoji">🐍</span>
+        </div>
+        <div class="course-body">
+          <div class="course-meta">
+            <span class="platform-tag" style="background:rgba(255,107,157,0.15);color:#FF8EB5;border:1px solid rgba(255,107,157,0.25);">NPTEL (IIT)</span>
+            <span class="free-pill">🆓 Free</span>
+          </div>
+          <div class="course-name">Programming in Python (NPTEL)</div>
+          <div class="course-desc">IIT-certified Python programming course covering fundamentals, data structures, file handling, and OOP. Earn an NPTEL certificate recognized by 700+ companies in India.</div>
+          <div class="course-skill">🏷️ Python · Programming · Beginner</div>
+        </div>
+        <div class="course-footer">
+          <a href="https://nptel.ac.in/courses/106/106/106106212/" target="_blank" rel="noopener noreferrer" class="learn-btn learn-btn-coding">Learn Now →</a>
+        </div>
+      </div>
+
+      <div class="course-card" data-cat="coding" data-platform="coursera" data-level="beginner" data-search="coding html css javascript web development duke university">
+        <div class="course-banner" style="background:linear-gradient(135deg,#0056d3,#003f9e);">
+          <span class="course-banner-emoji">🌐</span>
+        </div>
+        <div class="course-body">
+          <div class="course-meta">
+            <span class="platform-tag" style="background:rgba(0,86,211,0.15);color:#5097FF;border:1px solid rgba(0,86,211,0.25);">Coursera (Duke)</span>
+            <span class="free-pill">🆓 Audit Free</span>
+          </div>
+          <div class="course-name">Programming Foundations with JavaScript, HTML and CSS</div>
+          <div class="course-desc">Duke University's beginner course on web programming. Covers problem solving, HTML, CSS, and JavaScript. Build interactive webpages from scratch.</div>
+          <div class="course-skill">🏷️ HTML · CSS · JavaScript · Beginner</div>
+        </div>
+        <div class="course-footer">
+          <a href="https://www.coursera.org/learn/duke-programming-web" target="_blank" rel="noopener noreferrer" class="learn-btn learn-btn-coding">Learn Now →</a>
+        </div>
+      </div>
+
+      <!-- DIGITAL LITERACY -->
+      <div class="course-card" data-cat="digital" data-platform="google" data-level="beginner" data-search="digital literacy google certificate computer basics">
+        <div class="course-banner" style="background:linear-gradient(135deg,#1a4a3a,#0e7c5e);">
+          <span class="course-banner-emoji">🖥️</span>
+        </div>
+        <div class="course-body">
+          <div class="course-meta">
+            <span class="platform-tag" style="background:rgba(66,133,244,0.15);color:#70A8FF;border:1px solid rgba(66,133,244,0.25);">Google</span>
+            <span class="free-pill">🆓 Free</span>
+          </div>
+          <div class="course-name">Google Digital Garage: Fundamentals of Digital Marketing</div>
+          <div class="course-desc">26-module course covering digital marketing fundamentals, online business, search engine basics, and analytics. Earn a Google-certified certificate on completion.</div>
+          <div class="course-skill">🏷️ Digital Marketing · Computer Literacy · Beginner</div>
+        </div>
+        <div class="course-footer">
+          <a href="https://learndigital.withgoogle.com/digitalgarage/course/digital-marketing" target="_blank" rel="noopener noreferrer" class="learn-btn learn-btn-digital">Learn Now →</a>
+        </div>
+      </div>
+
+      <div class="course-card" data-cat="digital" data-platform="microsoft" data-level="beginner" data-search="microsoft digital literacy office excel word computer">
+        <div class="course-banner" style="background:linear-gradient(135deg,#003a70,#0078d4);">
+          <span class="course-banner-emoji">📊</span>
+        </div>
+        <div class="course-body">
+          <div class="course-meta">
+            <span class="platform-tag" style="background:rgba(0,120,212,0.15);color:#5BA6E8;border:1px solid rgba(0,120,212,0.25);">Microsoft</span>
+            <span class="free-pill">🆓 Free</span>
+          </div>
+          <div class="course-name">Microsoft Digital Literacy Certificate</div>
+          <div class="course-desc">Learn computer basics, internet safety, Microsoft Office essentials (Word, Excel, PowerPoint), and productivity tools used in every workplace and office environment.</div>
+          <div class="course-skill">🏷️ MS Office · Digital Basics · Beginner</div>
+        </div>
+        <div class="course-footer">
+          <a href="https://www.microsoft.com/en-us/digital-literacy" target="_blank" rel="noopener noreferrer" class="learn-btn learn-btn-digital">Learn Now →</a>
+        </div>
+      </div>
+
+      <div class="course-card" data-cat="digital" data-platform="swayam" data-level="beginner" data-search="swayam digital india computer literacy ict">
+        <div class="course-banner" style="background:linear-gradient(135deg,#1a3a1a,#2d7a2d);">
+          <span class="course-banner-emoji">🇮🇳</span>
+        </div>
+        <div class="course-body">
+          <div class="course-meta">
+            <span class="platform-tag" style="background:rgba(255,153,0,0.15);color:#FFAA44;border:1px solid rgba(255,153,0,0.25);">SWAYAM (Govt India)</span>
+            <span class="free-pill">🆓 Free</span>
+          </div>
+          <div class="course-name">ICT for Education – SWAYAM</div>
+          <div class="course-desc">Government of India's free platform offering ICT courses for students and teachers. Covers computer fundamentals, internet usage, and digital tools for learning.</div>
+          <div class="course-skill">🏷️ ICT · Digital Literacy · Beginner</div>
+        </div>
+        <div class="course-footer">
+          <a href="https://swayam.gov.in" target="_blank" rel="noopener noreferrer" class="learn-btn learn-btn-digital">Learn Now →</a>
+        </div>
+      </div>
+
+      <!-- COMMUNICATION -->
+      <div class="course-card" data-cat="communication" data-platform="coursera" data-level="beginner" data-search="english communication speaking writing grammar coursera">
+        <div class="course-banner" style="background:linear-gradient(135deg,#4a1a2a,#9e3d5c);">
+          <span class="course-banner-emoji">🗣️</span>
+        </div>
+        <div class="course-body">
+          <div class="course-meta">
+            <span class="platform-tag" style="background:rgba(0,86,211,0.15);color:#5097FF;border:1px solid rgba(0,86,211,0.25);">Coursera (UC Irvine)</span>
+            <span class="free-pill">🆓 Audit Free</span>
+          </div>
+          <div class="course-name">English for Career Development</div>
+          <div class="course-desc">Improve your professional English for job applications, interviews, and workplace communication. Covers writing emails, resumes, cover letters, and workplace vocabulary.</div>
+          <div class="course-skill">🏷️ English · Professional Writing · Communication · Beginner</div>
+        </div>
+        <div class="course-footer">
+          <a href="https://www.coursera.org/learn/careerdevelopment" target="_blank" rel="noopener noreferrer" class="learn-btn learn-btn-communication">Learn Now →</a>
+        </div>
+      </div>
+
+      <div class="course-card" data-cat="communication" data-platform="coursera" data-level="beginner" data-search="public speaking presentation communication coursera university">
+        <div class="course-banner" style="background:linear-gradient(135deg,#3d1a4a,#7a3d9e);">
+          <span class="course-banner-emoji">🎤</span>
+        </div>
+        <div class="course-body">
+          <div class="course-meta">
+            <span class="platform-tag" style="background:rgba(0,86,211,0.15);color:#5097FF;border:1px solid rgba(0,86,211,0.25);">Coursera</span>
+            <span class="free-pill">🆓 Audit Free</span>
+          </div>
+          <div class="course-name">Dynamic Public Speaking Specialization</div>
+          <div class="course-desc">University of Washington's 4-course specialization teaching presentation techniques, storytelling, impromptu speaking, and persuasive communication with confidence.</div>
+          <div class="course-skill">🏷️ Public Speaking · Presentations · Intermediate</div>
+        </div>
+        <div class="course-footer">
+          <a href="https://www.coursera.org/specializations/public-speaking" target="_blank" rel="noopener noreferrer" class="learn-btn learn-btn-communication">Learn Now →</a>
+        </div>
+      </div>
+
+      <div class="course-card" data-cat="communication" data-platform="khan" data-level="beginner" data-search="grammar writing english khan academy reading">
+        <div class="course-banner" style="background:linear-gradient(135deg,#4a2a1a,#9e6030);">
+          <span class="course-banner-emoji">📖</span>
+        </div>
+        <div class="course-body">
+          <div class="course-meta">
+            <span class="platform-tag" style="background:rgba(0,167,142,0.15);color:#00D4AA;border:1px solid rgba(0,167,142,0.25);">Khan Academy</span>
+            <span class="free-pill">🆓 Free Forever</span>
+          </div>
+          <div class="course-name">Grammar & Writing — Khan Academy</div>
+          <div class="course-desc">Complete grammar and writing course covering sentences, paragraphs, punctuation, style, and essay writing. Practice with instant feedback. Completely free, forever.</div>
+          <div class="course-skill">🏷️ Grammar · Writing · English · Beginner</div>
+        </div>
+        <div class="course-footer">
+          <a href="https://www.khanacademy.org/humanities/grammar" target="_blank" rel="noopener noreferrer" class="learn-btn learn-btn-communication">Learn Now →</a>
+        </div>
+      </div>
+
+      <!-- CAREER PREP -->
+      <div class="course-card" data-cat="career" data-platform="linkedin" data-level="beginner" data-search="interview preparation job resume career linkedin">
+        <div class="course-banner" style="background:linear-gradient(135deg,#1a2a4a,#1a5082);">
+          <span class="course-banner-emoji">🤝</span>
+        </div>
+        <div class="course-body">
+          <div class="course-meta">
+            <span class="platform-tag" style="background:rgba(0,119,181,0.15);color:#5BA6E8;border:1px solid rgba(0,119,181,0.25);">LinkedIn Learning</span>
+            <span class="free-pill">🆓 Free Trial</span>
+          </div>
+          <div class="course-name">Interview Preparation: How to Get the Job</div>
+          <div class="course-desc">Master job interviews with techniques on answering behavioral questions, salary negotiation, body language, and post-interview follow-up. Build confidence for any interview.</div>
+          <div class="course-skill">🏷️ Job Interview · Career · Resume · Beginner</div>
+        </div>
+        <div class="course-footer">
+          <a href="https://www.linkedin.com/learning/topics/interview-preparation" target="_blank" rel="noopener noreferrer" class="learn-btn learn-btn-career">Learn Now →</a>
+        </div>
+      </div>
+
+      <div class="course-card" data-cat="career" data-platform="coursera" data-level="beginner" data-search="resume cv career linkedin profile job coursera google">
+        <div class="course-banner" style="background:linear-gradient(135deg,#3a2a0a,#7a6010);">
+          <span class="course-banner-emoji">📄</span>
+        </div>
+        <div class="course-body">
+          <div class="course-meta">
+            <span class="platform-tag" style="background:rgba(66,133,244,0.15);color:#70A8FF;border:1px solid rgba(66,133,244,0.25);">Coursera (Google)</span>
+            <span class="free-pill">🆓 Audit Free</span>
+          </div>
+          <div class="course-name">Foundations of Project Management — Google</div>
+          <div class="course-desc">Google's entry-level career certificate in project management. Learn project lifecycles, agile methodology, and skills employers actively look for in 2026.</div>
+          <div class="course-skill">🏷️ Project Management · Career · Beginner</div>
+        </div>
+        <div class="course-footer">
+          <a href="https://www.coursera.org/learn/project-management-foundations" target="_blank" rel="noopener noreferrer" class="learn-btn learn-btn-career">Learn Now →</a>
+        </div>
+      </div>
+
+      <div class="course-card" data-cat="career" data-platform="nptel" data-level="beginner" data-search="soft skills career iit nptel personality development">
+        <div class="course-banner" style="background:linear-gradient(135deg,#2a3a1a,#4a7030);">
+          <span class="course-banner-emoji">🌟</span>
+        </div>
+        <div class="course-body">
+          <div class="course-meta">
+            <span class="platform-tag" style="background:rgba(255,107,157,0.15);color:#FF8EB5;border:1px solid rgba(255,107,157,0.25);">NPTEL (IIT)</span>
+            <span class="free-pill">🆓 Free</span>
+          </div>
+          <div class="course-name">Soft Skills for Career Success (NPTEL)</div>
+          <div class="course-desc">IIT-designed course covering workplace communication, team management, leadership, time management, and professional etiquette essential for career success.</div>
+          <div class="course-skill">🏷️ Soft Skills · Personality · Career · Beginner</div>
+        </div>
+        <div class="course-footer">
+          <a href="https://nptel.ac.in/courses/109/105/109105054/" target="_blank" rel="noopener noreferrer" class="learn-btn learn-btn-career">Learn Now →</a>
+        </div>
+      </div>
+
+      <!-- DATA & AI -->
+      <div class="course-card" data-cat="data" data-platform="google" data-level="beginner" data-search="data analytics google certificate sql excel tableau beginner">
+        <div class="course-banner" style="background:linear-gradient(135deg,#1a1a4a,#3030a0);">
+          <span class="course-banner-emoji">📈</span>
+        </div>
+        <div class="course-body">
+          <div class="course-meta">
+            <span class="platform-tag" style="background:rgba(66,133,244,0.15);color:#70A8FF;border:1px solid rgba(66,133,244,0.25);">Coursera (Google)</span>
+            <span class="free-pill">🆓 Audit Free</span>
+          </div>
+          <div class="course-name">Google Data Analytics Professional Certificate</div>
+          <div class="course-desc">8-course certificate program by Google covering data cleaning, analysis, visualization, SQL, R programming, and Tableau. Prepare for a high-demand data analytics role.</div>
+          <div class="course-skill">🏷️ Data Analytics · SQL · Excel · Intermediate</div>
+        </div>
+        <div class="course-footer">
+          <a href="https://www.coursera.org/professional-certificates/google-data-analytics" target="_blank" rel="noopener noreferrer" class="learn-btn learn-btn-data">Learn Now →</a>
+        </div>
+      </div>
+
+      <div class="course-card" data-cat="data" data-platform="microsoft" data-level="beginner" data-search="ai artificial intelligence microsoft machine learning beginner">
+        <div class="course-banner" style="background:linear-gradient(135deg,#1a0a3a,#4a1a8a);">
+          <span class="course-banner-emoji">🤖</span>
+        </div>
+        <div class="course-body">
+          <div class="course-meta">
+            <span class="platform-tag" style="background:rgba(0,120,212,0.15);color:#5BA6E8;border:1px solid rgba(0,120,212,0.25);">Microsoft Learn</span>
+            <span class="free-pill">🆓 Free</span>
+          </div>
+          <div class="course-name">AI for Everyone — Microsoft Learn</div>
+          <div class="course-desc">Microsoft's free beginner course introducing artificial intelligence, machine learning concepts, responsible AI, and how AI is transforming industries. No coding required.</div>
+          <div class="course-skill">🏷️ AI · Machine Learning · Beginner · No-Code</div>
+        </div>
+        <div class="course-footer">
+          <a href="https://learn.microsoft.com/en-us/training/paths/get-started-with-artificial-intelligence-on-azure/" target="_blank" rel="noopener noreferrer" class="learn-btn learn-btn-data">Learn Now →</a>
+        </div>
+      </div>
+
+      <div class="course-card" data-cat="data" data-platform="harvard" data-level="intermediate" data-search="data science python harvard cs50 statistics">
+        <div class="course-banner" style="background:linear-gradient(135deg,#1a0a0a,#7a1a1a);">
+          <span class="course-banner-emoji">🎓</span>
+        </div>
+        <div class="course-body">
+          <div class="course-meta">
+            <span class="platform-tag" style="background:rgba(165,0,0,0.15);color:#FF7070;border:1px solid rgba(165,0,0,0.25);">Harvard (edX)</span>
+            <span class="free-pill">🆓 Audit Free</span>
+          </div>
+          <div class="course-name">CS50's Introduction to Programming with Python</div>
+          <div class="course-desc">Harvard University's world-famous CS50 Python course. Covers functions, variables, conditionals, loops, exceptions, libraries, file I/O, and OOP from scratch.</div>
+          <div class="course-skill">🏷️ Python · Programming · Harvard · Beginner</div>
+        </div>
+        <div class="course-footer">
+          <a href="https://cs50.harvard.edu/python/" target="_blank" rel="noopener noreferrer" class="learn-btn learn-btn-data">Learn Now →</a>
+        </div>
+      </div>
+
+      <!-- DESIGN -->
+      <div class="course-card" data-cat="design" data-platform="coursera" data-level="beginner" data-search="graphic design canva figma ui ux coursera california">
+        <div class="course-banner" style="background:linear-gradient(135deg,#3a1a4a,#7a3d9e);">
+          <span class="course-banner-emoji">🎨</span>
+        </div>
+        <div class="course-body">
+          <div class="course-meta">
+            <span class="platform-tag" style="background:rgba(0,86,211,0.15);color:#5097FF;border:1px solid rgba(0,86,211,0.25);">Coursera (UC Davis)</span>
+            <span class="free-pill">🆓 Audit Free</span>
+          </div>
+          <div class="course-name">Graphic Design Specialization</div>
+          <div class="course-desc">Learn graphic design fundamentals, typography, color theory, image making, and visual composition. Build a professional portfolio through 5 hands-on projects.</div>
+          <div class="course-skill">🏷️ Graphic Design · Typography · Visual Design · Beginner</div>
+        </div>
+        <div class="course-footer">
+          <a href="https://www.coursera.org/specializations/graphic-design" target="_blank" rel="noopener noreferrer" class="learn-btn learn-btn-design">Learn Now →</a>
+        </div>
+      </div>
+
+      <div class="course-card" data-cat="design" data-platform="google" data-level="beginner" data-search="ux design google certificate figma user experience">
+        <div class="course-banner" style="background:linear-gradient(135deg,#2a1a3a,#6a3090);">
+          <span class="course-banner-emoji">🖌️</span>
+        </div>
+        <div class="course-body">
+          <div class="course-meta">
+            <span class="platform-tag" style="background:rgba(66,133,244,0.15);color:#70A8FF;border:1px solid rgba(66,133,244,0.25);">Coursera (Google)</span>
+            <span class="free-pill">🆓 Audit Free</span>
+          </div>
+          <div class="course-name">Google UX Design Professional Certificate</div>
+          <div class="course-desc">Google's 7-course UX design certificate. Learn user research, wireframing, prototyping with Figma, and designing accessible, user-friendly digital products.</div>
+          <div class="course-skill">🏷️ UX Design · Figma · Prototyping · Beginner</div>
+        </div>
+        <div class="course-footer">
+          <a href="https://www.coursera.org/professional-certificates/google-ux-design" target="_blank" rel="noopener noreferrer" class="learn-btn learn-btn-design">Learn Now →</a>
+        </div>
+      </div>
+
+      <!-- WRITING -->
+      <div class="course-card" data-cat="writing" data-platform="coursera" data-level="beginner" data-search="writing essays academic professional email coursera">
+        <div class="course-banner" style="background:linear-gradient(135deg,#0a2a2a,#1a6a6a);">
+          <span class="course-banner-emoji">✍️</span>
+        </div>
+        <div class="course-body">
+          <div class="course-meta">
+            <span class="platform-tag" style="background:rgba(0,86,211,0.15);color:#5097FF;border:1px solid rgba(0,86,211,0.25);">Coursera (Duke)</span>
+            <span class="free-pill">🆓 Audit Free</span>
+          </div>
+          <div class="course-name">English Composition I — Academic Writing</div>
+          <div class="course-desc">Duke University's writing course covering argumentative essays, research writing, thesis statements, and professional document structure for academic and career contexts.</div>
+          <div class="course-skill">🏷️ Academic Writing · Essays · English · Beginner</div>
+        </div>
+        <div class="course-footer">
+          <a href="https://www.coursera.org/learn/english-composition" target="_blank" rel="noopener noreferrer" class="learn-btn learn-btn-writing">Learn Now →</a>
+        </div>
+      </div>
+
+      <div class="course-card" data-cat="writing" data-platform="edx" data-level="beginner" data-search="professional email business writing resume edx">
+        <div class="course-banner" style="background:linear-gradient(135deg,#0a1a2a,#1a3a5a);">
+          <span class="course-banner-emoji">📧</span>
+        </div>
+        <div class="course-body">
+          <div class="course-meta">
+            <span class="platform-tag" style="background:rgba(2,117,216,0.15);color:#5BA6E8;border:1px solid rgba(2,117,216,0.25);">edX</span>
+            <span class="free-pill">🆓 Audit Free</span>
+          </div>
+          <div class="course-name">Professional Writing for Business (edX)</div>
+          <div class="course-desc">Learn to write professional emails, reports, proposals, and presentations. Master clear, concise business writing style that gets results in the modern workplace.</div>
+          <div class="course-skill">🏷️ Business Writing · Emails · Reports · Beginner</div>
+        </div>
+        <div class="course-footer">
+          <a href="https://www.edx.org/learn/writing/" target="_blank" rel="noopener noreferrer" class="learn-btn learn-btn-writing">Learn Now →</a>
+        </div>
+      </div>
+
+      <!-- ENTREPRENEURSHIP -->
+      <div class="course-card" data-cat="entrepreneurship" data-platform="coursera" data-level="beginner" data-search="entrepreneurship startup business wharton coursera idea">
+        <div class="course-banner" style="background:linear-gradient(135deg,#3a2a0a,#8a6010);">
+          <span class="course-banner-emoji">💡</span>
+        </div>
+        <div class="course-body">
+          <div class="course-meta">
+            <span class="platform-tag" style="background:rgba(0,86,211,0.15);color:#5097FF;border:1px solid rgba(0,86,211,0.25);">Coursera (Wharton)</span>
+            <span class="free-pill">🆓 Audit Free</span>
+          </div>
+          <div class="course-name">Entrepreneurship 1: Developing the Opportunity</div>
+          <div class="course-desc">Wharton School's (UPenn) beginner entrepreneurship course. Learn to develop business ideas, validate opportunities, understand market needs, and plan your startup journey.</div>
+          <div class="course-skill">🏷️ Entrepreneurship · Startup · Business · Beginner</div>
+        </div>
+        <div class="course-footer">
+          <a href="https://www.coursera.org/learn/wharton-entrepreneurship-opportunity" target="_blank" rel="noopener noreferrer" class="learn-btn learn-btn-entrepreneurship">Learn Now →</a>
+        </div>
+      </div>
+
+      <div class="course-card" data-cat="entrepreneurship" data-platform="nptel" data-level="beginner" data-search="entrepreneurship india msme small business nptel startup">
+        <div class="course-banner" style="background:linear-gradient(135deg,#2a1a0a,#6a4010);">
+          <span class="course-banner-emoji">🚀</span>
+        </div>
+        <div class="course-body">
+          <div class="course-meta">
+            <span class="platform-tag" style="background:rgba(255,107,157,0.15);color:#FF8EB5;border:1px solid rgba(255,107,157,0.25);">NPTEL (IIT)</span>
+            <span class="free-pill">🆓 Free</span>
+          </div>
+          <div class="course-name">Entrepreneurship Essentials — NPTEL</div>
+          <div class="course-desc">IIT's entrepreneurship course covering business model canvas, ideation, market validation, legal basics, funding, and government schemes for Indian startups.</div>
+          <div class="course-skill">🏷️ Entrepreneurship · India · Startup · Beginner</div>
+        </div>
+        <div class="course-footer">
+          <a href="https://nptel.ac.in/courses/110/106/110106127/" target="_blank" rel="noopener noreferrer" class="learn-btn learn-btn-entrepreneurship">Learn Now →</a>
+        </div>
+      </div>
+
+      <!-- BONUS: Cybersecurity -->
+      <div class="course-card" data-cat="digital coding" data-platform="google" data-level="beginner" data-search="cybersecurity google certificate security hacking network">
+        <div class="course-banner" style="background:linear-gradient(135deg,#0a2a1a,#1a6a3a);">
+          <span class="course-banner-emoji">🔐</span>
+        </div>
+        <div class="course-body">
+          <div class="course-meta">
+            <span class="platform-tag" style="background:rgba(66,133,244,0.15);color:#70A8FF;border:1px solid rgba(66,133,244,0.25);">Coursera (Google)</span>
+            <span class="free-pill">🆓 Audit Free</span>
+          </div>
+          <div class="course-name">Google Cybersecurity Professional Certificate</div>
+          <div class="course-desc">8-course Google program covering network security, threat detection, Python for security, SIEM tools, and incident response. Highly in-demand skill set for 2026.</div>
+          <div class="course-skill">🏷️ Cybersecurity · Networks · Python · Beginner</div>
+        </div>
+        <div class="course-footer">
+          <a href="https://www.coursera.org/professional-certificates/google-cybersecurity" target="_blank" rel="noopener noreferrer" class="learn-btn learn-btn-coding">Learn Now →</a>
+        </div>
+      </div>
+
+    </div><!-- end courses-grid -->
+
+    <!-- No results -->
+    <div class="no-results" id="noResults">
+      <div class="icon">🔍</div>
+      <h3 style="color:var(--text-muted);font-size:1.2rem;margin-bottom:8px;">No courses found</h3>
+      <p style="color:var(--text-dim);">Try a different search term or clear your filters.</p>
+      <button onclick="resetFilters()" class="btn btn-outline" style="margin-top:20px;">Clear Filters</button>
+    </div>
+
+    <!-- Bottom CTA -->
+    <div class="glow-card" style="text-align:center;margin-top:64px;">
+      <div style="font-size:2.5rem;margin-bottom:16px;">🎯</div>
+      <h2 style="font-family:var(--font-heading);font-size:1.9rem;font-weight:800;margin-bottom:12px;">Skills + Scholarships = Success</h2>
+      <p style="color:var(--text-muted);max-width:520px;margin:0 auto 28px;line-height:1.7;">After building your skills, find scholarships that fund your journey. Use ScholarPath to discover scholarships personalized for your profile.</p>
+      <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+        <a href="form.html" class="btn btn-primary">Find My Scholarships →</a>
+        <a href="analysis.html" class="btn btn-outline">View Survey Insights</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="nav-logo" style="font-size:1.3rem;">🎓 ScholarPath</a>
+        <p>Empowering Indian students to discover and access educational scholarships they deserve. Free, fast, and personalized.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Quick Links</h5>
+        <a href="index.html">Home</a>
+        <a href="form.html">Find Scholarships</a>
+        <a href="analysis.html">Survey Analysis</a>
+        <a href="courses.html">Free Courses</a>
+        <a href="about.html">About Us</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h5>Course Categories</h5>
+        <a href="courses.html">Coding</a>
+        <a href="courses.html">Digital Literacy</a>
+        <a href="courses.html">Communication</a>
+        <a href="courses.html">Career Prep</a>
+      </div>
+      <div class="footer-col">
+        <h5>Platforms</h5>
+        <a href="https://nptel.ac.in" target="_blank">NPTEL</a>
+        <a href="https://swayam.gov.in" target="_blank">SWAYAM</a>
+        <a href="https://www.coursera.org" target="_blank">Coursera</a>
+        <a href="https://www.freecodecamp.org" target="_blank">freeCodeCamp</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 ScholarPath. All rights reserved.</p>
+      <p style="color:var(--text-dim);font-size:0.8rem;">Powered by FastAPI + MySQL</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleNav() {
+  document.getElementById('navLinks').classList.toggle('open');
+}
+
+let currentCat = 'all';
+
+function setCat(cat, btn) {
+  currentCat = cat;
+  document.querySelectorAll('.cat-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterCourses();
+}
+
+function filterCourses() {
+  const searchTerm = document.getElementById('courseSearch').value.toLowerCase().trim();
+  const platformVal = document.getElementById('platformFilter').value.toLowerCase();
+  const levelVal    = document.getElementById('levelFilter').value.toLowerCase();
+  const cards       = document.querySelectorAll('.course-card');
+  let visible = 0;
+
+  cards.forEach(card => {
+    const cat      = (card.dataset.cat || '').toLowerCase();
+    const platform = (card.dataset.platform || '').toLowerCase();
+    const level    = (card.dataset.level || '').toLowerCase();
+    const search   = (card.dataset.search || '') + ' ' + (card.querySelector('.course-name')?.textContent || '');
+
+    const catMatch      = currentCat === 'all' || cat.includes(currentCat);
+    const platformMatch = !platformVal || platform.includes(platformVal);
+    const levelMatch    = !levelVal || level.includes(levelVal);
+    const searchMatch   = !searchTerm || search.toLowerCase().includes(searchTerm);
+
+    if (catMatch && platformMatch && levelMatch && searchMatch) {
+      card.style.display = '';
+      visible++;
+    } else {
+      card.style.display = 'none';
+    }
+  });
+
+  document.getElementById('countNum').textContent = visible;
+  document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
+}
+
+function resetFilters() {
+  document.getElementById('courseSearch').value = '';
+  document.getElementById('platformFilter').value = '';
+  document.getElementById('levelFilter').value = '';
+  currentCat = 'all';
+  document.querySelectorAll('.cat-tab').forEach((b, i) => b.classList.toggle('active', i === 0));
+  filterCourses();
+}
+
+// Animate cards on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.style.opacity = 1; e.target.style.transform = 'translateY(0)'; } });
+}, { threshold: 0.06 });
+
+document.querySelectorAll('.course-card').forEach(card => {
+  card.style.opacity = 0;
+  card.style.transform = 'translateY(24px)';
+  card.style.transition = 'opacity 0.45s ease, transform 0.45s ease';
+  observer.observe(card);
+});
+</script>
+</body>
+</html>
