@@ -1,5 +1,4 @@
-const API = 'http://localhost:8000';
-
+const API = 'https://scholarpath-cep-project.onrender.com';
 function renderDocs(docsStr) {
   if (!docsStr) return '<p style="color:var(--text-dim);font-size:0.9rem;">Not specified</p>';
   // Try splitting by comma or newline
