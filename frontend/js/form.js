@@ -1,4 +1,4 @@
-const API = 'http://localhost:8000';
+const API = 'https://scholarpath-cep-project.onrender.com';
 let currentStep = 1;
 const totalSteps = 4;
 
